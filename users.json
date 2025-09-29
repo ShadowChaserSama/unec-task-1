@@ -1,0 +1,14 @@
+{
+    "Ali Zulbalayev": {
+        "admin": 1,
+        "password": "12345678"
+    },
+    "Test Account": {
+        "admin": 1,
+        "password": "123456"
+    },
+    "testA": {
+        "admin": 0,
+        "password": "123444"
+    }
+}
