@@ -2,24 +2,91 @@
 import json
 
 data = {}
+users = {}
+
+acname = None
+
 
 # DataBase 
 
 def save_datas():
     with open('data.json','w',encoding='utf-8') as f:
         json.dump(data,f,ensure_ascii=False,indent=4)
+    
+    with open('users.json','w',encoding='utf-8') as ff:
+        json.dump(users,ff,ensure_ascii=False,indent=4)
 
 with open('data.json','r',encoding='utf-8') as f:
     data = json.load(f)
 
+with open('users.json','r',encoding='utf-8') as ff:
+    users = json.load(ff)
+    
+
+# Register and Login
+def Login(name,password):
+    global acname
+    if name in users.keys():
+        if password == users[name]['password']:
+            print('You successfuly Logged!')
+            acname = name
+            show_menu()
+        else:
+            print('Wrong Password!')
+    else:
+        print('Wrong Name!')
+    
+def Register(name,password):
+    global acname
+    if not name in users.keys():
+        users[name] = {
+            "admin": 0,
+            "password": password
+        }
+        print('You successfuly Registered!')
+        save_datas()
+        acname = name
+        show_menu()
+    else:
+        print('Same account name exists in the system!')
+        
+
+
+def home():
+    print('Welcome to Student Console App!\nPlease Login or Register and continue!')
+    print('''
+          *************************
+          (1) - Login
+          (2) - Register
+          *************************
+          ''')
+    try:
+        choice = int(input('Enter proccess number: '))
+        if choice == 1:
+            name = input('Enter account name: ')
+            password = input('Enter account password: ')
+            Login(name,password)
+            #show_menu()
+        elif choice == 2:
+            name = input('Enter account name: ')
+            password = input('Enter account password: ')
+            if len(name) > 3 and len(name) <= 50 and len(password) >= 3 and len(password) <= 40:
+                Register(name,password)
+            else:
+                print('Account name must be min 4 and max 50 character!')
+        else:
+            print('Enter valid number!')
+    except:
+        print('Something went wrong!')
+        
+
 
 def admin_perm(func):
     def wrapper(*args,**kwargs):
-        password = input('Enter Password: ')
-        if password == '123456':
+        if users[acname]['admin'] == 1:
             func(*args,**kwargs)
         else:
-            print('Invalid Password!')
+            print('You are not admin!')
     return wrapper
         
 @admin_perm
@@ -68,14 +135,16 @@ def show_datas():
 def show_menu():
     while True:
         print(f'''
-            ******************
+            **********************
+            Welcome Back {acname}
+            **********************
             1 - Show Students.
             2 - Add Student.
             3 - Delete Student.
             4 - Show all database.
             5 - Change student name.
             6 - Exit Menu.
-            ******************
+            **********************
         ''')
         try:
             choice = int(input('Select one number : '))
@@ -105,4 +174,4 @@ def show_menu():
         except:
             print('Somethings went wrong!')
 
-show_menu()
+home()
