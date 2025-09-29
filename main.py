@@ -47,6 +47,15 @@ def show_students(cls):
     for name in data.get(cls,[]):
         print(f'{i}. {name}')
         i += 1
+        
+@admin_perm
+def change_student(oldname,newname,cls):
+    try:
+        if oldname in data[cls]:
+            data[cls][data[cls].index(oldname)] = newname
+            save_datas()
+    except:
+        print('Enter valid class name!')
 
 def show_datas():
     i = 1
@@ -64,7 +73,8 @@ def show_menu():
             2 - Add Student.
             3 - Delete Student.
             4 - Show all database.
-            5 - Exit Menu.
+            5 - Change student name.
+            6 - Exit Menu.
             ******************
         ''')
         try:
@@ -83,6 +93,11 @@ def show_menu():
             elif choice == 4:
                 show_datas()
             elif choice == 5:
+                cls = input(f'Select one class({data.keys()}): ')
+                oldname = input('Enter current student name: ')
+                newname = input('Enter new student name: ')
+                change_student(oldname,newname,cls)
+            elif choice == 6:
                 print('Program successfuly stop!')
                 break
             else:
