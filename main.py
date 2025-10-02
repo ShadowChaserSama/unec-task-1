@@ -55,10 +55,10 @@ def Register(name,password):
 def home():
     print('Welcome to Student Console App!\nPlease Login or Register and continue!')
     print('''
-          *************************
-          (1) - Login
-          (2) - Register
-          *************************
+          **************************
+          *     (1) - Login        *
+          *     (2) - Register     *
+          **************************
           ''')
     try:
         choice = int(input('Enter proccess number: '))
@@ -130,21 +130,46 @@ def show_datas():
         for j in data[cls]:
             print(f'{i}. {j}')
             i += 1
+
+def change_name(name,password):
+    global acname
+    if password == users[acname]['password']:
+        users[name] = users.pop(acname)
+        acname = name
+        save_datas()
+    else:
+        print('You enter wrong password!')
+
+@admin_perm
+def reset_datas():
+    global data
+    global users
+    sure = input('Are u sure about reset database(y/n): ')
+    if sure == 'y':
+        data = {}
+        users = {}
+        save_datas()
+        print('Database successfuly reseted!')
+    elif sure == 'n' or sure != 'y':
+        pass
         
 
 def show_menu():
     while True:
         print(f'''
-            **********************
-            Welcome Back {acname}
-            **********************
-            1 - Show Students.
-            2 - Add Student.
-            3 - Delete Student.
-            4 - Show all database.
-            5 - Change student name.
-            6 - Exit Menu.
-            **********************
+            ***************************************
+                    Welcome Back {acname}             
+            ***************************************
+            *       (1) - Show Students.          *
+            *       (2) - Add Student.            *
+            *       (3) - Delete Student.         *
+            *       (4) - Show all database.      *
+            *       (5) - Change student name.    *
+            *       (6) - Exit Menu.              *
+            ***************************************
+            *       (9) - Change account name.    *
+            *       (0) - Reset database.         *
+            ***************************************
         ''')
         try:
             choice = int(input('Select one number : '))
@@ -166,12 +191,22 @@ def show_menu():
                 oldname = input('Enter current student name: ')
                 newname = input('Enter new student name: ')
                 change_student(oldname,newname,cls)
+            elif choice == 9:
+                password = input('Enter account password: ')
+                name = input('Enter new name: ')
+                if len(name) > 3 and len(name) <= 50:
+                    change_name(name,password)
+                else:
+                    print('Name must be max 50 and min 4 character!')
+            elif choice == 0:
+                reset_datas()
+                break
             elif choice == 6:
                 print('Program successfuly stop!')
                 break
             else:
                 print('Enter valid number!')
-        except:
-            print('Somethings went wrong!')
+        except Exception as e:
+            print('Somethings went wrong!',e)
 
 home()
